@@ -1,13 +1,13 @@
-var http = require('http')
+var http = require('http');
 
 function error_json(info) {
-    return `{"error": "${info}"}`
+    return `{"error": "${info}"}`;
 }
 
 function write_before_end(res, info) {
     if (!res.writableEnded) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(error_json(info))
+        res.end(error_json(info));
     }
 }
 
@@ -18,7 +18,7 @@ function mandatory_check(res, body_obj, key) {
 }
 
 function value_lenght_check(start, end, value) {
-    console.log(value + " 当前长度： " + value.length)
+    console.log(value + " 当前长度： " + value.length);
 
     if (value.length < start || value.length > end)
         return false;
@@ -39,10 +39,10 @@ function body_validate(res, body) {
 
     try {
         var body_obj = JSON.parse(body);
-        var mandatory_check_list = ['payment_method', 'bank_country_code', 'account_name', 'account_number']
+        var mandatory_check_list = ['payment_method', 'bank_country_code', 'account_name', 'account_number'];
 
         mandatory_check_list.forEach((item) => {
-            mandatory_check(res, body_obj, item)
+            mandatory_check(res, body_obj, item);
         })
 
         if (!(body_obj.payment_method === 'LOCAL' || body_obj.payment_method === 'SWIFT')) {
@@ -78,25 +78,25 @@ function body_validate(res, body) {
         }
 
         if (body_obj.payment_method === 'SWIFT') {
-            mandatory_check(res, body_obj, 'swift_code')
+            mandatory_check(res, body_obj, 'swift_code');
         }
 
         if (!(body_obj.swift_code.length === 8 || body_obj.swift_code.length === 11)) {
             write_before_end(res, "Length of 'swift_code' should be either 8 or 11");
         }
 
-        var sub_code = body_obj.swift_code.substr(4, 2)
+        var sub_code = body_obj.swift_code.substr(4, 2);
         if (sub_code !== body_obj.bank_country_code) {
             write_before_end(res, "The swift code is not valid for the given bank country code: " + sub_code);
         }
 
         if (body_obj.bank_country_code === 'AU') {
-            mandatory_check(res, body_obj, 'bsb')
+            mandatory_check(res, body_obj, 'bsb');
             value_fix_lenght_check(res, 6, body_obj.bsb);
         }
 
         if (body_obj.bank_country_code === 'US') {
-            mandatory_check(res, body_obj, 'aba')
+            mandatory_check(res, body_obj, 'aba');
             value_fix_lenght_check(res, 9, body_obj.aba);
         }
     } catch (err) {
@@ -104,4 +104,4 @@ function body_validate(res, body) {
     }
 }
 
-module.exports = body_validate
+module.exports = body_validate;

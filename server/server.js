@@ -1,6 +1,6 @@
 var http = require('http');
-var path = require('path')
-var bank_body_validate = require('./rules/bank_rule')
+var path = require('path');
+var bank_body_validate = require('./rules/bank_rule');
 
 var pages = [
     {
@@ -16,7 +16,7 @@ var pages = [
             req.on('end', function () {
                 bank_body_validate(res, post)
                 if (!res.writableEnded) {
-                    res.writeHead(200, { 'Content-Type': 'application/json' })
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end('{"success": "Bank details saved"}');
                 }
             });
@@ -25,8 +25,8 @@ var pages = [
 ]
 
 http.createServer(function (req, res) {
-    var base_path = path.basename(decodeURI(req.url))
-    console.log("访问　" + base_path)
+    var base_path = path.basename(decodeURI(req.url));
+    console.log("访问　" + base_path);
 
     var found = false;
     pages.forEach((page) => {
@@ -37,8 +37,7 @@ http.createServer(function (req, res) {
     });
 
     if (!found) { // 暂时不清楚为何不能用　 writableEnded 来判断
-        res.writeHead(404, { 'Content-Type': 'application/json' })
+        res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end('{"error": "Page Not Found"}');
     }
-
 }).listen(30001)

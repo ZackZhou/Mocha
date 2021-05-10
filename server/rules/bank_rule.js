@@ -17,7 +17,7 @@ function mandatory_check(res, body_obj, key) {
     }
 }
 
-function value_lenght_check(start, end, value) {
+function value_length_check(start, end, value) {
     console.log(value + " 当前长度： " + value.length);
 
     if (value.length < start || value.length > end)
@@ -26,7 +26,7 @@ function value_lenght_check(start, end, value) {
         return true;
 }
 
-function value_fix_lenght_check(res, size, value) {
+function value_fix_length_check(res, size, value) {
     if (value.length !== size) {
         write_before_end(res, `${value} size should be ${size}`);
     }
@@ -53,23 +53,23 @@ function body_validate(res, body) {
             write_before_end(res, "bank_country_code should be one of US,AU,CN");
         }
 
-        if (!value_lenght_check(2, 10, body_obj.account_name)) {
+        if (!value_length_check(2, 10, body_obj.account_name)) {
             write_before_end(res, "account_name length should be from 2 to 10");
         }
 
         switch (body_obj.bank_country_code) {
             case 'US':
-                if (!value_lenght_check(1, 17, body_obj.account_number)) {
+                if (!value_length_check(1, 17, body_obj.account_number)) {
                     write_before_end(res, "Length of account_number should be between 7 and 11 when bank_country_code is 'US'");
                 }
                 break;
             case 'AU':
-                if (!value_lenght_check(6, 9, body_obj.account_number)) {
+                if (!value_length_check(6, 9, body_obj.account_number)) {
                     write_before_end(res, "for AU, account number is 6-9 character long");
                 }
                 break;
             case 'CN':
-                if (!value_lenght_check(8, 20, body_obj.account_number)) {
+                if (!value_length_check(8, 20, body_obj.account_number)) {
                     write_before_end(res, "for CN, account number is 8-20 character long");
                 }
                 break;
@@ -92,12 +92,12 @@ function body_validate(res, body) {
 
         if (body_obj.bank_country_code === 'AU') {
             mandatory_check(res, body_obj, 'bsb');
-            value_fix_lenght_check(res, 6, body_obj.bsb);
+            value_fix_length_check(res, 6, body_obj.bsb);
         }
 
         if (body_obj.bank_country_code === 'US') {
             mandatory_check(res, body_obj, 'aba');
-            value_fix_lenght_check(res, 9, body_obj.aba);
+            value_fix_length_check(res, 9, body_obj.aba);
         }
     } catch (err) {
         write_before_end(res, "Body is not valiad Json");
